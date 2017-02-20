@@ -11,7 +11,7 @@ class NotificationHook < Redmine::Hook::Listener
     tracker = CGI::escapeHTML(issue.tracker.name.downcase)
     subject = CGI::escapeHTML(issue.subject)
     url     = get_url(issue)
-    text    = "#{author} reported #{project.name} #{tracker} <a href=\"#{url}\">##{issue.id}</a>: #{subject}"
+    text    = "#{author} reported #{project.name} #{tracker} #{url}: #{subject}"
 
     data          = {}
     data[:text]   = text
@@ -32,8 +32,8 @@ class NotificationHook < Redmine::Hook::Listener
     subject = CGI::escapeHTML(issue.subject)
     comment = CGI::escapeHTML(context[:journal].notes)
     url     = get_url(issue)
-    text    = "#{author} updated #{project.name} #{tracker} <a href=\"#{url}\">##{issue.id}</a>: #{subject}"
-    text   += ": <i>#{truncate(comment)}</i>" unless comment.blank?
+    text    = "#{author} updated #{project.name} #{tracker} #{url}: #{subject}"
+    text   += ": #{truncate(comment)}" unless comment.blank?
 
     data          = {}
     data[:text]   = text
@@ -53,7 +53,7 @@ class NotificationHook < Redmine::Hook::Listener
     wiki         = CGI::escapeHTML(page.pretty_title)
     project_name = CGI::escapeHTML(project.name)
     url          = get_url(page)
-    text         = "#{author} edited #{project_name} wiki page <a href=\"#{url}\">#{wiki}</a>"
+    text         = "#{author} edited #{project_name} wiki page #{url}"
 
     data          = {}
     data[:text]   = text
@@ -111,6 +111,7 @@ class NotificationHook < Redmine::Hook::Listener
       :auth_token => data[:token],
       :room_id => data[:room],
       :notify => data[:notify] ? 1 : 0,
+      :message_format => 'text',
       :from => 'Redmine',
       :message => data[:text]
     })
