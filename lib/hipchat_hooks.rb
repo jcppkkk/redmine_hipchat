@@ -25,6 +25,10 @@ class NotificationHook < Redmine::Hook::Listener
     send_message(data)
   end
 
+  def controller_issues_bulk_edit_before_save(context)
+    controller_issues_edit_after_save(context)
+  end
+
   def controller_issues_edit_after_save(context = {})
     issue   = context[:issue]
     project = issue.project
@@ -33,7 +37,7 @@ class NotificationHook < Redmine::Hook::Listener
     author  = CGI::escapeHTML(User.current.name)
     tracker = CGI::escapeHTML(issue.tracker.name.downcase)
     subject = CGI::escapeHTML(issue.subject)
-    comment = CGI::escapeHTML(context[:journal].notes)
+    comment = context[:journal].respond_to?(:notes) ? CGI::escapeHTML(context[:journal].notes) : ""
     url     = get_url(issue)
     text    = "#{author} updated #{project.name} #{tracker} #{url}: #{subject}"
     text   += ": #{truncate(comment)}" unless comment.blank?
