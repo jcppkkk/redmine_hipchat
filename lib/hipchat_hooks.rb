@@ -66,11 +66,11 @@ class NotificationHook < Redmine::Hook::Listener
   def hipchat_configured?(project)
     if !project.hipchat_auth_token.empty? && !project.hipchat_room_name.empty?
       return true
-    elsif Setting.plugin_redmine_hipchat[:projects] &&
-          Setting.plugin_redmine_hipchat[:projects].include?(project.id.to_s) &&
-          Setting.plugin_redmine_hipchat[:auth_token] &&
-          Setting.plugin_redmine_hipchat[:room_name] &&
-          Setting.plugin_redmine_hipchat[:endpoint]
+    elsif Setting.plugin_redmine_hipchat['projects'] &&
+          Setting.plugin_redmine_hipchat['projects'].include?(project.id.to_s) &&
+          Setting.plugin_redmine_hipchat['auth_token'] &&
+          Setting.plugin_redmine_hipchat['room_name'] &&
+          Setting.plugin_redmine_hipchat['endpoint']
       return true
     else
       Rails.logger.info "Not sending HipChat message - missing config"
@@ -79,20 +79,20 @@ class NotificationHook < Redmine::Hook::Listener
   end
 
   def hipchat_auth_token(project)
-    return project.hipchat_auth_token.presence || Setting.plugin_redmine_hipchat[:auth_token]
+    return project.hipchat_auth_token.presence || Setting.plugin_redmine_hipchat['auth_token']
   end
 
   def hipchat_room_name(project)
-    return project.hipchat_room_name.presence || Setting.plugin_redmine_hipchat[:room_name]
+    return project.hipchat_room_name.presence || Setting.plugin_redmine_hipchat['room_name']
   end
 
   def hipchat_endpoint(project)
-    return project.hipchat_endpoint.presence || Setting.plugin_redmine_hipchat[:endpoint]
+    return project.hipchat_endpoint.presence || Setting.plugin_redmine_hipchat['endpoint']
   end
 
   def hipchat_notify(project)
     return project.hipchat_notify if !project.hipchat_auth_token.empty? && !project.hipchat_room_name.empty?
-    Setting.plugin_redmine_hipchat[:notify]
+    Setting.plugin_redmine_hipchat['notify']
   end
 
   def get_url(object)
