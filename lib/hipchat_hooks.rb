@@ -31,18 +31,18 @@ class NotificationHook < Redmine::Hook::Listener
     project = issue.project
     return true unless hipchat_configured?(project)
 
-    editor    = User.current.name
-    tracker   = issue.tracker.name
-    subject   = issue.subject
-    url       = get_url(issue)
-    text      = "#{editor} Update #{tracker} ##{issue.id}: #{subject} #{url}"
+    editor   = User.current.name
+    tracker  = issue.tracker.name
+    subject  = issue.subject
+    url      = get_url(issue)
+    text     = "#{editor} Update #{tracker} ##{issue.id}: #{subject} #{url}"
 
-    journal = context[:journal]
-    comment   = journal.try(:notes)
-    text     += ": #{truncate(comment)}" if comment.present?
-    details   = journal.visible_details
-    details   = details_to_strings(details, true).map{ |detail| "• #{detail}" }.join("\n") if details.present?
-    text     += "\n#{details}" if details.present?
+    journal  = context[:journal]
+    comment  = journal.try(:notes)
+    text    += ": #{truncate(comment)}" if comment.present?
+    details  = journal.visible_details
+    details  = details_to_strings(details, true).map{ |detail| "• #{detail}" }.join("\n") if details.present?
+    text    += "\n#{details}" if details.present?
 
     send_message(project, text)
   end
