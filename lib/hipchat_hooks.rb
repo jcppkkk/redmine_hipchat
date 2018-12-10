@@ -17,7 +17,7 @@ class NotificationHook < Redmine::Hook::Listener
     assignee  = issue.assigned_to.try(:name).presence || "Unassigned"
     url       = get_url(issue)
     text      = "#{author} Created #{tracker} ##{issue.id} : #{subject} [ #{status} | #{assignee} ] #{url}"
-    text     += "\n #{issue.description}" unless issue.description.blank?
+    text     += "\r\n #{issue.description}" unless issue.description.blank?
 
     send_message(project, text)
   end
@@ -39,10 +39,11 @@ class NotificationHook < Redmine::Hook::Listener
 
     journal  = context[:journal]
     comment  = journal.try(:notes)
-    text    += ": #{truncate(comment)}" if comment.present?
+    text    += "\r\n#{truncate(comment)}" if comment.present?
     details  = journal.visible_details
-    details  = details_to_strings(details, true).map{ |detail| "• #{detail}" }.join("\n") if details.present?
-    text    += "\n#{details}" if details.present?
+    if details.present?
+      text    += "\r\n" + details_to_strings(details, true).map{ |detail| "• #{detail}" }.join("\r\n")
+    end
 
     send_message(project, text)
   end
