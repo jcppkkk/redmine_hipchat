@@ -136,7 +136,10 @@ class NotificationHook < Redmine::Hook::Listener
 
   def truncate(text, length = 20, end_string = '…')
     return unless text
-    words = text.split()
-    words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
+    lines = text.split(/\n+/)
+    if lines.length > 30
+      lines[30] = end_string
+    end
+    return lines[0..30].join("")
   end
 end
