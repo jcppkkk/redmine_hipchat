@@ -38,12 +38,10 @@ class NotificationHook < Redmine::Hook::Listener
     text     = "#{editor} Update #{tracker} ##{issue.id}: #{subject} #{url}"
 
     journal  = context[:journal]
-    comment  = journal.try(:notes)
-    text    += "\r\n#{truncate(comment)}" if comment.present?
     details  = journal.visible_details
-    if details.present?
-      text    += "\r\n" + details_to_strings(details, true).map{ |detail| "• #{detail}" }.join("\r\n")
-    end
+    text     += "\r\n" + details_to_strings(details, true).map{ |detail| "• #{detail}" }.join("\r\n") if details.present?
+    notes    = journal.try(:notes)
+    text     += "\r\n#{truncate(notes)}" if notes.present?
 
     send_message(project, text)
   end
